@@ -696,7 +696,7 @@ template <class T> struct vector
         return e;
     }
 
-    template<class K> 
+    template<class K>
     int htfind(const K &key)
     {
         loopi(ulen) if(htcmp(key, buf[i])) return i;
@@ -896,7 +896,7 @@ template<class K, class T> struct hashtable : hashset<hashtableentry<K, T> >
     const T &find(const K &key, const T &notfound)
     {
         HTFIND(key, c->elem.data, notfound);
-    }   
+    }
 
     static inline chain *getnext(void *i) { return ((chain *)i)->next; }
     static inline K &getkey(void *i) { return ((chain *)i)->elem.key; }
@@ -1104,7 +1104,7 @@ struct stream
     virtual int printf(const char *fmt, ...) PRINTFARGS(2, 3);
     virtual uint getcrc() { return 0; }
 
-    template<class T> int put(const T *v, int n) { return write(v, n*sizeof(T))/sizeof(T); } 
+    template<class T> int put(const T *v, int n) { return write(v, n*sizeof(T))/sizeof(T); }
     template<class T> bool put(T n) { return write(&n, sizeof(n)) == sizeof(n); }
     template<class T> bool putlil(T n) { return put<T>(lilswap(n)); }
     template<class T> bool putbig(T n) { return put<T>(bigswap(n)); }
@@ -1125,11 +1125,11 @@ struct streambuf
     stream *s;
 
     streambuf(stream *s) : s(s) {}
-    
+
     T get() { return s->get<T>(); }
     int get(T *vals, int numvals) { return s->get(vals, numvals); }
     void put(const T &val) { s->put(&val, 1); }
-    void put(const T *vals, int numvals) { s->put(vals, numvals); } 
+    void put(const T *vals, int numvals) { s->put(vals, numvals); }
     int length() { return s->size(); }
 };
 
@@ -1151,9 +1151,9 @@ static inline int iscubealnum(uchar c) { return cubectype[c]&(CT_ALPHA|CT_DIGIT)
 static inline int iscubelower(uchar c) { return cubectype[c]&CT_LOWER; }
 static inline int iscubeupper(uchar c) { return cubectype[c]&CT_UPPER; }
 static inline int cube2uni(uchar c)
-{ 
-    extern const int cube2unichars[256]; 
-    return cube2unichars[c]; 
+{
+    extern const int cube2unichars[256];
+    return cube2unichars[c];
 }
 static inline uchar uni2cube(int c)
 {

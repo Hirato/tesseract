@@ -222,7 +222,7 @@ void dofxaa(GLuint outfbo = 0)
 
     endtimer(fxaatimer);
 }
- 
+
 GLuint smaaareatex = 0, smaasearchtex = 0, smaafbo[3] = { 0, 0, 0 };
 
 extern int smaaquality, smaagreenluma, smaacoloredge;
@@ -391,7 +391,7 @@ void dosmaa(GLuint outfbo = 0)
     }
     glClear(GL_COLOR_BUFFER_BIT);
     smaablendweightshader->set();
-    LOCALPARAM(subsamples, (tqaa ? (tqaaframe&1) + 1 : 0)); 
+    LOCALPARAM(subsamples, (tqaa ? (tqaaframe&1) + 1 : 0));
     glBindTexture(GL_TEXTURE_RECTANGLE_ARB, gnormaltex);
     glTexParameteri(GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -446,12 +446,12 @@ void jitteraa()
         projmatrix.jitter(x*2.0f/vieww, y*2.0f/viewh);
     }
 }
-     
+
 bool maskedaa()
 {
     return tqaa && tqaamovemask;
 }
-   
+
 void doaa(GLuint outfbo, void (*resolve)(GLuint, int))
 {
     if(smaa) { resolve(smaafbo[0], tqaa && !tqaapack ? AA_VELOCITY : (!smaagreenluma && !smaacoloredge ? AA_LUMA : AA_UNUSED)); dosmaa(outfbo); }

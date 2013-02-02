@@ -71,7 +71,7 @@ int initing = NOT_INITING;
 
 bool initwarning(const char *desc, int level, int type)
 {
-    if(initing < level) 
+    if(initing < level)
     {
         addchange(desc, type);
         return true;
@@ -143,7 +143,7 @@ void renderbackground(const char *caption, Texture *mapshot, const char *mapname
     if(!inbetweenframes && !force) return;
 
     stopsounds(); // stop sounds while loading
- 
+
     int w = screen->w, h = screen->h;
     if(forceaspect) w = int(ceil(h*forceaspect));
     getbackgroundres(w, h);
@@ -284,7 +284,7 @@ void renderbackground(const char *caption, Texture *mapshot, const char *mapname
                 draw_text("?", 0, 0);
                 glPopMatrix();
                 glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-            }        
+            }
             settexture("data/mapshot_frame.png", 3);
             glBegin(GL_TRIANGLE_STRIP);
             glTexCoord2f(0, 0); glVertex2f(x,    y);
@@ -338,7 +338,7 @@ void renderprogress(float bar, const char *text, GLuint tex, bool background)   
     if(!inbetweenframes || envmapping) return;
 
     clientkeepalive();      // make sure our connection doesn't time out while loading maps etc.
-    
+
     #ifdef __APPLE__
     interceptkey(SDLK_UNKNOWN); // keep the event queue awake to avoid 'beachball' cursor
     #endif
@@ -363,7 +363,7 @@ void renderprogress(float bar, const char *text, GLuint tex, bool background)   
     glColor3f(1, 1, 1);
 
     float fh = 0.075f*min(w, h), fw = fh*10,
-          fx = renderedframe ? w - fw - fh/4 : 0.5f*(w - fw), 
+          fx = renderedframe ? w - fw - fh/4 : 0.5f*(w - fw),
           fy = renderedframe ? fh/4 : h - fh*1.5f,
           fu1 = 0/512.0f, fu2 = 511/512.0f,
           fv1 = 0/64.0f, fv2 = 52/64.0f;
@@ -517,7 +517,7 @@ VARFP(gamma, 30, 100, 300,
 {
     if(gamma == curgamma) return;
     curgamma = gamma;
-	float f = gamma/100.0f;
+    float f = gamma/100.0f;
     if(SDL_SetGamma(f,f,f)==-1) conoutf(CON_ERROR, "Could not set gamma: %s", SDL_GetError());
 });
 
@@ -552,8 +552,8 @@ void setupscreen(int &usedcolorbits, int &useddepthbits, int &usedfsaa)
         for(int i = 0; modes[i]; i++)
         {
             if(dbgmodes) conoutf(CON_DEBUG, "mode[%d]: %d x %d", i, modes[i]->w, modes[i]->h);
-            if(widest < 0 || modes[i]->w > modes[widest]->w || (modes[i]->w == modes[widest]->w && modes[i]->h > modes[widest]->h)) 
-                widest = i; 
+            if(widest < 0 || modes[i]->w > modes[widest]->w || (modes[i]->w == modes[widest]->w && modes[i]->h > modes[widest]->h))
+                widest = i;
         }
         if(scr_w < 0 || scr_h < 0)
         {
@@ -565,7 +565,7 @@ void setupscreen(int &usedcolorbits, int &useddepthbits, int &usedfsaa)
                 if(w <= modes[i]->w && h <= modes[i]->h && (best < 0 || modes[i]->w < modes[best]->w))
                     best = i;
             }
-        } 
+        }
         if(best < 0)
         {
             int w = scr_w, h = scr_h;
@@ -582,11 +582,11 @@ void setupscreen(int &usedcolorbits, int &useddepthbits, int &usedfsaa)
         {
             if(best >= 0) { scr_w = modes[best]->w; scr_h = modes[best]->h; }
             else if(desktopw > 0 && desktoph > 0) { scr_w = desktopw; scr_h = desktoph; }
-            else if(widest >= 0) { scr_w = modes[widest]->w; scr_h = modes[widest]->h; } 
+            else if(widest >= 0) { scr_w = modes[widest]->w; scr_h = modes[widest]->h; }
         }
         else if(best < 0)
-        { 
-            scr_w = min(scr_w >= 0 ? scr_w : (scr_h >= 0 ? (scr_h*SCR_DEFAULTW)/SCR_DEFAULTH : SCR_DEFAULTW), (int)modes[widest]->w); 
+        {
+            scr_w = min(scr_w >= 0 ? scr_w : (scr_h >= 0 ? (scr_h*SCR_DEFAULTW)/SCR_DEFAULTH : SCR_DEFAULTW), (int)modes[widest]->w);
             scr_h = min(scr_h >= 0 ? scr_h : (scr_w >= 0 ? (scr_w*SCR_DEFAULTH)/SCR_DEFAULTW : SCR_DEFAULTH), (int)modes[widest]->h);
         }
         if(dbgmodes) conoutf(CON_DEBUG, "selected %d x %d", scr_w, scr_h);
@@ -681,7 +681,7 @@ void resetgl()
     cleanuplights();
     cleanupshaders();
     cleanupgl();
-    
+
     SDL_SetVideoMode(0, 0, 0, 0);
 
     int usedcolorbits = 0, useddepthbits = 0, usedfsaa = 0;
@@ -694,7 +694,7 @@ void resetgl()
     inbetweenframes = false;
     if(!reloadtexture(*notexture) ||
        !reloadtexture("<premul>data/logo.png") ||
-       !reloadtexture("<premul>data/logo_1024.png") || 
+       !reloadtexture("<premul>data/logo_1024.png") ||
        !reloadtexture("<premul>data/cube2badge.png") ||
        !reloadtexture("data/background.png") ||
 #if 0
@@ -708,7 +708,7 @@ void resetgl()
     reloadfonts();
     inbetweenframes = true;
     renderbackground("initializing...");
-	restoregamma();
+    restoregamma();
     initgbuffer();
     reloadshaders();
     reloadtextures();
@@ -722,7 +722,7 @@ vector<SDL_Event> events;
 
 void pushevent(const SDL_Event &e)
 {
-    events.add(e); 
+    events.add(e);
 }
 
 static bool filterevent(const SDL_Event &event)
@@ -733,10 +733,10 @@ static bool filterevent(const SDL_Event &event)
             #ifndef WIN32
             if(grabinput && !(screen->flags&SDL_FULLSCREEN))
             {
-                if(event.motion.x == screen->w / 2 && event.motion.y == screen->h / 2) 
+                if(event.motion.x == screen->w / 2 && event.motion.y == screen->h / 2)
                     return false;  // ignore any motion events generated by SDL_WarpMouse
                 #ifdef __APPLE__
-                if(event.motion.y == 0) 
+                if(event.motion.y == 0)
                     return false;  // let mac users drag windows via the title bar
                 #endif
             }
@@ -799,9 +799,9 @@ static void checkmousemotion(int &dx, int &dy)
     {
         SDL_Event &event = events[i];
         if(event.type != SDL_MOUSEMOTION)
-        { 
-            if(i > 0) events.remove(0, i); 
-            return; 
+        {
+            if(i > 0) events.remove(0, i);
+            return;
         }
         dx += event.motion.xrel;
         dy += event.motion.yrel;
@@ -824,7 +824,7 @@ void checkinput()
 {
     SDL_Event event;
     int lasttype = 0, lastbut = 0;
-    bool mousemoved = false; 
+    bool mousemoved = false;
     while(events.length() || pollevent(event))
     {
         if(events.length()) event = events.remove(0);
@@ -880,7 +880,7 @@ void swapbuffers()
     recorder::capture();
     SDL_GL_SwapBuffers();
 }
- 
+
 VAR(menufps, 0, 60, 1000);
 VARP(maxfps, 0, 200, 1000);
 
@@ -979,7 +979,7 @@ void getframemillis(float &avg, float &bestdiff, float &worstdiff)
 
     avg = total/float(MAXFPSHISTORY);
     best = best - avg;
-    worstdiff = avg - worst;    
+    worstdiff = avg - worst;
 }
 
 void getfps(int &fps, int &bestdiff, int &worstdiff)
@@ -1052,12 +1052,12 @@ int main(int argc, char **argv)
     {
         if(argv[i][0]=='-') switch(argv[i][1])
         {
-            case 'q': 
-			{
-				const char *dir = sethomedir(&argv[i][2]);
-				if(dir) logoutf("Using home directory: %s", dir);
-				break;
-			}
+            case 'q':
+            {
+                const char *dir = sethomedir(&argv[i][2]);
+                if(dir) logoutf("Using home directory: %s", dir);
+                break;
+            }
         }
     }
     execfile("init.cfg", false);
@@ -1083,13 +1083,13 @@ int main(int argc, char **argv)
             case 'v': vsync = atoi(&argv[i][2]); break;
             case 't': fullscreen = atoi(&argv[i][2]); break;
             case 's': stencilbits = atoi(&argv[i][2]); break;
-            case 'f': /* compat, ignore */ break; 
-            case 'l': 
+            case 'f': /* compat, ignore */ break;
+            case 'l':
             {
-                char pkgdir[] = "packages/"; 
-                load = strstr(path(&argv[i][2]), path(pkgdir)); 
-                if(load) load += sizeof(pkgdir)-1; 
-                else load = &argv[i][2]; 
+                char pkgdir[] = "packages/";
+                load = strstr(path(&argv[i][2]), path(pkgdir));
+                if(load) load += sizeof(pkgdir)-1;
+                else load = &argv[i][2];
                 break;
             }
             case 'x': initscript = &argv[i][2]; break;
@@ -1129,7 +1129,7 @@ int main(int argc, char **argv)
 
     logoutf("init: video: mode");
     const SDL_VideoInfo *video = SDL_GetVideoInfo();
-    if(video) 
+    if(video)
     {
         desktopw = video->current_w;
         desktoph = video->current_h;
@@ -1171,11 +1171,11 @@ int main(int argc, char **argv)
     execfile("data/brush.cfg");
     execfile("mybrushes.cfg", false);
     if(game::savedservers()) execfile(game::savedservers(), false);
-    
+
     identflags |= IDF_PERSIST;
-    
+
     initing = INIT_LOAD;
-    if(!execfile(game::savedconfig(), false)) 
+    if(!execfile(game::savedconfig(), false))
     {
         execfile(game::defaultconfig());
         writecfg(game::restoreconfig());
@@ -1191,7 +1191,7 @@ int main(int argc, char **argv)
     concatstring(gamecfgname, game::gameident());
     concatstring(gamecfgname, ".cfg");
     execfile(gamecfgname);
-    
+
     game::loadconfigs();
     initing = NOT_INITING;
 
@@ -1237,7 +1237,7 @@ int main(int argc, char **argv)
         lastmillis += curtime;
         totalmillis = millis;
         updatetime();
- 
+
         checkinput();
         menuprocess();
         tryedit();
@@ -1266,8 +1266,8 @@ int main(int argc, char **argv)
         swapbuffers();
         renderedframe = inbetweenframes = true;
     }
-    
-    ASSERT(0);   
+
+    ASSERT(0);
     return EXIT_FAILURE;
 
     #if defined(WIN32) && !defined(_DEBUG) && !defined(__GNUC__)

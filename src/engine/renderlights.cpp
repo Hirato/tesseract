@@ -421,7 +421,7 @@ GLuint shouldscale()
 {
     return scalefbo;
 }
-     
+
 void doscale(int w, int h)
 {
     if(!scaletex) return;
@@ -432,14 +432,14 @@ void doscale(int w, int h)
     glViewport(0, 0, w, h);
 
     glBindTexture(GL_TEXTURE_RECTANGLE_ARB, scaletex);
-    
+
     SETSHADER(scale);
 
     screenquad(gw, gh);
 
     endtimer(scaletimer);
 }
-   
+
 VARFP(glineardepth, 0, 0, 3, initwarning("g-buffer setup", INIT_LOAD, CHANGE_SHADERS));
 VAR(gdepthformat, 1, 0, 0);
 
@@ -829,7 +829,7 @@ void processhdr(GLuint outfbo, int aa)
             glActiveTexture_(GL_TEXTURE0_ARB);
             break;
         default: SETSHADER(hdrtonemap); break;
-    }       
+    }
     glBindTexture(GL_TEXTURE_RECTANGLE_ARB, hdrtex);
     glActiveTexture_(GL_TEXTURE1_ARB);
     glBindTexture(GL_TEXTURE_RECTANGLE_ARB, b0tex);
@@ -2999,7 +2999,7 @@ void rendercsmshadowmaps()
     shadowradius = fabs(csm.lightview.project_bb(worldmax, worldmin));
 
     float polyfactor = csmpolyfactor, polyoffset = csmpolyoffset;
-    if(smfilter > 2) { polyfactor = csmpolyfactor2; polyoffset = csmpolyoffset2; } 
+    if(smfilter > 2) { polyfactor = csmpolyfactor2; polyoffset = csmpolyoffset2; }
     if(polyfactor || polyoffset)
     {
         glPolygonOffset(polyfactor, polyoffset);
@@ -3422,7 +3422,7 @@ void rendertransparent()
                 glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_FALSE);
                 glClear(GL_COLOR_BUFFER_BIT);
                 glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
-            } 
+            }
             if(scissor) glDisable(GL_SCISSOR_TEST);
             maskgbuffer("cngd");
         }
@@ -3578,7 +3578,7 @@ void rendergbuffer()
     rendermapmodels();
     GLERROR;
 
-    if(minimapping) 
+    if(minimapping)
     {
         renderminimapmaterials();
     }
@@ -3652,13 +3652,13 @@ void shademodelpreview(int x, int y, int w, int h, bool background, bool scissor
 
         if(outfbo)
         {
-           glBindFramebuffer_(GL_FRAMEBUFFER_EXT, 0); 
+           glBindFramebuffer_(GL_FRAMEBUFFER_EXT, 0);
            glViewport(x, y, w, h);
            glBindTexture(GL_TEXTURE_RECTANGLE_ARB, scaletex);
            SETSHADER(scale);
         }
     }
-    
+
     if(!background)
     {
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -3674,10 +3674,10 @@ void shademodelpreview(int x, int y, int w, int h, bool background, bool scissor
     glMatrixMode(GL_MODELVIEW);
 
     GLERROR;
-    
+
     glViewport(0, 0, screen->w, screen->h);
 }
- 
+
 void shadegbuffer()
 {
     GLERROR;

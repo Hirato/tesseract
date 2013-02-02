@@ -297,7 +297,7 @@ void gengbanlist()
     loopv(gbans)
     {
         baninfo &b = gbans[i];
-        l->buf.put(cmd, printban(b, &cmd[cmdlen]) - cmd); 
+        l->buf.put(cmd, printban(b, &cmd[cmdlen]) - cmd);
         l->buf.add('\n');
     }
     if(gbanlists.length() && gbanlists.last()->equals(*l))
@@ -316,7 +316,7 @@ void gengbanlist()
     loopv(clients)
     {
         client &c = *clients[i];
-        if(c.servport >= 0 && !c.message) 
+        if(c.servport >= 0 && !c.message)
         {
             c.message = l;
             c.message->refs++;
@@ -659,9 +659,9 @@ void checkclients()
                 {
                     if(c.output.length()) c.output.setsize(0);
                     else
-                    { 
+                    {
                         c.message->purge();
-                        c.message = NULL; 
+                        c.message = NULL;
                     }
                     c.outputpos = 0;
                     if(!c.message && c.output.empty() && c.shouldpurge)

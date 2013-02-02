@@ -14,7 +14,7 @@ void loadsky(const char *basename, Texture *texs[6])
         {
             char *chop = strchr(name, '*');
             if(chop) { *chop = '\0'; concatstring(name, side); concatstring(name, wildcard+1); }
-            texs[i] = textureload(name, 3, true, false); 
+            texs[i] = textureload(name, 3, true, false);
         }
         else
         {
@@ -34,7 +34,7 @@ Texture *cloudoverlay = NULL;
 
 Texture *loadskyoverlay(const char *basename)
 {
-    const char *ext = strrchr(basename, '.'); 
+    const char *ext = strrchr(basename, '.');
     string name;
     copystring(name, makerelpath("packages", basename));
     Texture *t = notexture;
@@ -52,7 +52,7 @@ Texture *loadskyoverlay(const char *basename)
     return t;
 }
 
-SVARFR(skybox, "", { if(skybox[0]) loadsky(skybox, sky); }); 
+SVARFR(skybox, "", { if(skybox[0]) loadsky(skybox, sky); });
 HVARR(skyboxcolour, 0, 0xFFFFFF, 0xFFFFFF);
 FVARR(skyboxoverbright, 1, 2, 16);
 FVARR(skyboxoverbrightthreshold, 0, 0.7f, 1);
@@ -163,7 +163,7 @@ void draw_env_overlay(int w, Texture *overlay = NULL, float tx = 0, float ty = 0
         glColor4f(r, g, b, 0);
         glTexCoord2f(tx + p.x*tsz2, ty + p.y*tsz2); glVertex3f(p.x*w, p.y*w, z);
     }
-    glEnd();    
+    glEnd();
 }
 
 static struct domevert
@@ -171,17 +171,17 @@ static struct domevert
     vec pos;
     uchar color[4];
 
-	domevert() {}
-	domevert(const vec &pos, const bvec &fcolor, float alpha) : pos(pos)
-	{
-		memcpy(color, fcolor.v, 3);
-		color[3] = uchar(alpha*255);
-	}
-	domevert(const domevert &v0, const domevert &v1) : pos(vec(v0.pos).add(v1.pos).normalize())
-	{
+    domevert() {}
+    domevert(const vec &pos, const bvec &fcolor, float alpha) : pos(pos)
+    {
+        memcpy(color, fcolor.v, 3);
+        color[3] = uchar(alpha*255);
+    }
+    domevert(const domevert &v0, const domevert &v1) : pos(vec(v0.pos).add(v1.pos).normalize())
+    {
         memcpy(color, v0.color, 4);
         if(v0.pos.z != v1.pos.z) color[3] += uchar((v1.color[3] - v0.color[3]) * (pos.z - v0.pos.z) / (v1.pos.z - v0.pos.z));
-	}
+    }
 } *domeverts = NULL;
 static GLushort *domeindices = NULL;
 static int domenumverts = 0, domenumindices = 0, domecapindices = 0;
@@ -263,7 +263,7 @@ static void initdome(const bvec &color, float minalpha = 0.0f, float maxalpha = 
         int domecapverts = 0;
         loopi(domenumverts) if(!domeverts[i].pos.z) domecap[domecapverts++] = i;
         domeverts[domenumverts++] = domevert(vec(0.0f, 0.0f, -capsize), color, maxalpha);
-        quicksort(domecap, domecapverts, sortdomecap); 
+        quicksort(domecap, domecapverts, sortdomecap);
         loopi(domecapverts)
         {
             int n = domecapverts-1-i;
@@ -287,12 +287,12 @@ static void initdome(const bvec &color, float minalpha = 0.0f, float maxalpha = 
 
 static void deletedome()
 {
-	domenumverts = domenumindices = 0;
+    domenumverts = domenumindices = 0;
     if(domevbuf) { glDeleteBuffers_(1, &domevbuf); domevbuf = 0; }
     if(domeebuf) { glDeleteBuffers_(1, &domeebuf); domeebuf = 0; }
 }
 
-FVARR(fogdomeheight, -1, -0.5f, 1); 
+FVARR(fogdomeheight, -1, -0.5f, 1);
 FVARR(fogdomemin, 0, 0, 1);
 FVARR(fogdomemax, 0, 0, 1);
 VARR(fogdomecap, 0, 1, 1);
@@ -307,7 +307,7 @@ static void drawdome()
 {
     float capsize = fogdomecap && fogdomeheight < 1 ? (1 + fogdomeheight) / (1 - fogdomeheight) : -1;
     bvec color = fogdomecolour ? fogdomecolor : fogcolor;
-    if(!domenumverts || domecolor != color || domeminalpha != fogdomemin || domemaxalpha != fogdomemax || domecapsize != capsize || domeclipz != fogdomeclip) 
+    if(!domenumverts || domecolor != color || domeminalpha != fogdomemin || domemaxalpha != fogdomemax || domecapsize != capsize || domeclipz != fogdomeclip)
     {
         initdome(color, min(fogdomemin, fogdomemax), fogdomemax, capsize, fogdomeclip);
         domecolor = color;
@@ -342,7 +342,7 @@ void cleanupsky()
     deletedome();
 }
 
-VAR(showsky, 0, 1, 1); 
+VAR(showsky, 0, 1, 1);
 VAR(clampsky, 0, 1, 1);
 
 VARR(fogdomeclouds, 0, 1, 1);
@@ -380,7 +380,7 @@ bool limitsky()
 void drawskybox(int farplane)
 {
     float skyclip = 0, topclip = 1;
-    if(skyclip) skyclip = 0.5f + 0.5f*(skyclip-camera1->o.z)/float(worldsize); 
+    if(skyclip) skyclip = 0.5f + 0.5f*(skyclip-camera1->o.z)/float(worldsize);
 
     if(limitsky())
     {
@@ -392,7 +392,7 @@ void drawskybox(int farplane)
         glDepthFunc(GL_LEQUAL);
         glDepthMask(GL_FALSE);
     }
-    
+
     if(ldrscale < 1 && skyboxoverbright > 1 && skyboxoverbrightthreshold < 1)
     {
         SETSHADER(skyboxoverbright);
@@ -412,11 +412,11 @@ void drawskybox(int farplane)
     draw_envbox(farplane/2, skyclip, topclip, 0x3F, sky);
     glPopMatrix();
 
-    if(fogdomemax && !fogdomeclouds) 
+    if(fogdomemax && !fogdomeclouds)
     {
         drawfogdome(farplane);
     }
-    
+
     defaultshader->set();
 
     if(cloudbox[0])
@@ -457,10 +457,10 @@ void drawskybox(int farplane)
         glEnable(GL_CULL_FACE);
     }
 
-	if(fogdomemax && fogdomeclouds)
-	{
+    if(fogdomemax && fogdomeclouds)
+    {
         drawfogdome(farplane);
-	}
+    }
 
     if(clampsky) glDepthRange(0, 1);
 

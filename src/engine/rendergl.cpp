@@ -203,7 +203,7 @@ static bool checkseries(const char *s, const char *name, int low, int high)
     while(*s && !isdigit(*s)) ++s;
     if(!*s) return false;
     int n = 0;
-    while(isdigit(*s)) n = n*10 + (*s++ - '0');    
+    while(isdigit(*s)) n = n*10 + (*s++ - '0');
     return n >= low && n <= high;
 }
 
@@ -269,7 +269,7 @@ void gl_checkextensions()
     //else conoutf(CON_WARN, "WARNING: No multitexture extension!");
     else fatal("Multitexture support is required!");
 
-    if(hasext(exts, "GL_ARB_vertex_buffer_object")) 
+    if(hasext(exts, "GL_ARB_vertex_buffer_object"))
     {
         hasVBO = true;
         if(dbgexts) conoutf(CON_INIT, "Using GL_ARB_vertex_buffer_object extension.");
@@ -279,7 +279,7 @@ void gl_checkextensions()
 #ifdef __APPLE__
     /* VBOs over 256KB seem to destroy performance on 10.5, but not in 10.6 */
     extern int maxvbosize;
-    if(osversion < 0x0A0600) maxvbosize = min(maxvbosize, 8192);  
+    if(osversion < 0x0A0600) maxvbosize = min(maxvbosize, 8192);
 #endif
 
     if(hasext(exts, "GL_ARB_pixel_buffer_object"))
@@ -325,7 +325,7 @@ void gl_checkextensions()
         if(dbgexts) conoutf(CON_INIT, "Using GL_ARB_texture_float extension.");
     }
 
-    if(hasext(exts, "GL_NV_float_buffer")) 
+    if(hasext(exts, "GL_NV_float_buffer"))
     {
         hasNVFB = true;
         if(dbgexts) conoutf(CON_INIT, "Using GL_NV_float_buffer extension.");
@@ -359,7 +359,7 @@ void gl_checkextensions()
         {
             hasAFBO = true;
             if(dbgexts) conoutf(CON_INIT, "Using GL_ARB_framebuffer_object extension.");
-        } 
+        }
         if(hasext(exts, "GL_EXT_framebuffer_blit"))
         {
             glBlitFramebuffer_     = (PFNGLBLITFRAMEBUFFEREXTPROC)        getprocaddress("glBlitFramebufferEXT");
@@ -445,7 +445,7 @@ void gl_checkextensions()
     {
         //conoutf(CON_WARN, "WARNING: ATI cards may show garbage in skybox. (use \"/ati_skybox_bug 1\" to fix)");
         gdepthstencil = 0; // some older ATI GPUs do not support reading from depth-stencil textures, so only use depth-stencil renderbuffer for now
-        if(checkseries(renderer, "Radeon HD", 4000, 5199)) ati_pf_bug = 1;  
+        if(checkseries(renderer, "Radeon HD", 4000, 5199)) ati_pf_bug = 1;
     }
     else if(nvidia)
     {
@@ -515,13 +515,13 @@ void gl_checkextensions()
 
         extern bool checkglslsupport();
         if(checkglslsupport()) hasGLSL = true;
-        
+
         const char *str = (const char *)glGetString(GL_SHADING_LANGUAGE_VERSION);
         conoutf(CON_INIT, "GLSL: %s", str ? str : "unknown");
 
         uint majorversion, minorversion;
         if(!str || sscanf(str, " %u.%u", &majorversion, &minorversion) != 2) glslversion = 100;
-        else glslversion = majorversion*100 + minorversion; 
+        else glslversion = majorversion*100 + minorversion;
     }
     if(!hasGLSL || glslversion < 100) fatal("GLSL support is required!");
 
@@ -532,7 +532,7 @@ void gl_checkextensions()
         hasMBR = true;
         if(dbgexts) conoutf(CON_INIT, "Using GL_ARB_map_buffer_range.");
     }
- 
+
     if(hasext(exts, "GL_ARB_uniform_buffer_object"))
     {
         glGetUniformIndices_       = (PFNGLGETUNIFORMINDICESPROC)      getprocaddress("glGetUniformIndices");
@@ -772,7 +772,7 @@ COMMAND(glext, "s");
 struct timer
 {
     enum { MAXQUERY = 4 };
- 
+
     const char *name;
     bool gpu;
     GLuint query[MAXQUERY];
@@ -788,7 +788,7 @@ extern int usetimers;
 
 timer *findtimer(const char *name, bool gpu)
 {
-    loopv(timers) if(!strcmp(timers[i].name, name) && timers[i].gpu == gpu) 
+    loopv(timers) if(!strcmp(timers[i].name, name) && timers[i].gpu == gpu)
     {
         timerorder.removeobj(i);
         timerorder.add(i);
@@ -799,14 +799,14 @@ timer *findtimer(const char *name, bool gpu)
     t.name = name;
     t.gpu = gpu;
     memset(t.query, 0, sizeof(t.query));
-    if(gpu) glGenQueries_(timer::MAXQUERY, t.query); 
+    if(gpu) glGenQueries_(timer::MAXQUERY, t.query);
     t.waiting = 0;
     t.starttime = 0;
     t.result = -1;
     t.print = -1;
     return &t;
 }
- 
+
 timer *begintimer(const char *name, bool gpu)
 {
     if(!usetimers || inbetweenframes || (gpu && !hasTQ)) return NULL;
@@ -831,7 +831,7 @@ void endtimer(timer *t)
     }
     else t->result = max(float(getclockmillis() - t->starttime), 0.0f);
 }
-           
+
 void synctimers()
 {
     timercycle = (timercycle + 1) % timer::MAXQUERY;
@@ -867,7 +867,7 @@ void cleanuptimers()
 VARFN(timer, usetimers, 0, 0, 1, cleanuptimers());
 VAR(frametimer, 0, 0, 1);
 int framemillis = 0; // frame time (ie does not take into account the swap)
-     
+
 void printtimers(int conw, int conh)
 {
     if(!frametimer && !usetimers) return;
@@ -891,7 +891,7 @@ void printtimers(int conw, int conh)
     }
     if(totalmillis - lastprint >= 200) lastprint = totalmillis;
 }
-         
+
 
 void gl_init(int w, int h, int bpp, int depth, int fsaa)
 {
@@ -905,7 +905,7 @@ void gl_init(int w, int h, int bpp, int depth, int fsaa)
     glStencilFunc(GL_ALWAYS, 0, ~0);
     glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
     glShadeModel(GL_SMOOTH);
-    
+
     glEnable(GL_LINE_SMOOTH);
     //glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
 
@@ -948,7 +948,7 @@ VAR(wireframe, 0, 0, 1);
 ICOMMAND(getcamyaw, "", (), floatret(camera1->yaw));
 ICOMMAND(getcampitch, "", (), floatret(camera1->pitch));
 ICOMMAND(getcamroll, "", (), floatret(camera1->roll));
-ICOMMAND(getcampos, "", (), 
+ICOMMAND(getcampos, "", (),
 {
     defformatstring(pos)("%s %s %s", floatstr(camera1->o.x), floatstr(camera1->o.y), floatstr(camera1->o.z));
     result(pos);
@@ -1010,16 +1010,16 @@ void computezoom()
         oldavatarfov = zoom > 0 ? avatarfov : avatarzoomfov,
         newavatarfov = zoom > 0 ? avatarzoomfov : avatarfov;
     float t = zoomvel ? float(zoomvel - (totalmillis - zoommillis)) / zoomvel : 0;
-    if(t <= 0) 
+    if(t <= 0)
     {
-        if(!zoomvel && fabs(newfov - curfov) >= 1) 
+        if(!zoomvel && fabs(newfov - curfov) >= 1)
         {
             curfov = newfov;
             curavatarfov = newavatarfov;
         }
         zoom = max(zoom, 0);
     }
-    else 
+    else
     {
         curfov = oldfov*t + newfov*(1 - t);
         curavatarfov = oldavatarfov*t + newavatarfov*(1 - t);
@@ -1033,7 +1033,7 @@ FVARP(sensitivity, 1e-3f, 3, 1000);
 FVARP(sensitivityscale, 1e-3f, 1, 1000);
 VARP(invmouse, 0, 0, 1);
 FVARP(mouseaccel, 0, 0, 1000);
- 
+
 VAR(thirdperson, 0, 0, 2);
 FVAR(thirdpersondistance, 0, 20, 50);
 FVAR(thirdpersonup, -25, 0, 25);
@@ -1057,12 +1057,12 @@ void mousemove(int dx, int dy)
     float cursens = sensitivity, curaccel = mouseaccel;
     if(zoom)
     {
-        if(zoomautosens) 
+        if(zoomautosens)
         {
             cursens = float(sensitivity*zoomfov)/fov;
             curaccel = float(mouseaccel*zoomfov)/fov;
         }
-        else 
+        else
         {
             cursens = zoomsens;
             curaccel = zoomaccel;
@@ -1106,12 +1106,12 @@ void recomputecamera()
         camera1->collidetype = COLLIDE_AABB;
         camera1->move = -1;
         camera1->eyeheight = camera1->aboveeye = camera1->radius = camera1->xradius = camera1->yradius = 2;
-        
+
         vec dir, up, side;
         vecfromyawpitch(camera1->yaw, camera1->pitch, -1, 0, dir);
         vecfromyawpitch(camera1->yaw, camera1->pitch+90, 1, 0, up);
         vecfromyawpitch(camera1->yaw, 0, 0, -1, side);
-        if(game::collidecamera()) 
+        if(game::collidecamera())
         {
             movecamera(camera1, dir, thirdpersondistance, 1);
             movecamera(camera1, dir, clamp(thirdpersondistance - camera1->o.dist(player->o), 0.0f, 1.0f), 0.1f);
@@ -1132,7 +1132,7 @@ void recomputecamera()
                 movecamera(camera1, side, clamp(dist - camera1->o.dist(pos), 0.0f, 1.0f), 0.1f);
             }
         }
-        else 
+        else
         {
             camera1->o.add(vec(dir).mul(thirdpersondistance));
             if(thirdpersonup) camera1->o.add(vec(up).mul(thirdpersonup));
@@ -1253,7 +1253,7 @@ void enablepolygonoffset(GLenum type)
         glEnable(type);
         return;
     }
-    
+
     glmatrixf offsetmatrix = projmatrix;
     offsetmatrix[14] += depthoffset * projmatrix[10];
 
@@ -1270,7 +1270,7 @@ void disablepolygonoffset(GLenum type)
         glDisable(type);
         return;
     }
-    
+
     glMatrixMode(GL_PROJECTION);
     glPopMatrix();
     glMatrixMode(GL_MODELVIEW);
@@ -1314,7 +1314,7 @@ int pushscissor(float sx1, float sy1, float sx2, float sy2)
 
     glScissor(sx, sy, sw, sh);
     if(scissoring<=1) glEnable(GL_SCISSOR_TEST);
-    
+
     return scissoring;
 }
 
@@ -1833,7 +1833,7 @@ void drawminimap()
         rendergbuffer();
         shademinimap();
     }
-        
+
     glDisable(GL_DEPTH_TEST);
     glDisable(GL_CULL_FACE);
 
@@ -1846,7 +1846,7 @@ void drawminimap()
     envmapping = false;
     minimapping = 0;
 
-    readhdr(size, size, GL_RGB5, GL_UNSIGNED_BYTE, NULL, GL_TEXTURE_2D, minimaptex); 
+    readhdr(size, size, GL_RGB5, GL_UNSIGNED_BYTE, NULL, GL_TEXTURE_2D, minimaptex);
     setuptexparameters(minimaptex, NULL, 3, 1, GL_RGB5, GL_TEXTURE_2D);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
@@ -1888,7 +1888,7 @@ void drawcubemap(int size, const vec &o, float yaw, float pitch, const cubemapsi
     }
     else fogmat = MAT_AIR;
     setfog(abovemat);
-    
+
     float oldaspect = aspect, oldfovy = fovy, oldfov = curfov, oldldrscale = ldrscale, oldldrscaleb = ldrscaleb;
     int oldfarplane = farplane, oldvieww = vieww, oldviewh = viewh;
     curfov = fovy = 90;
@@ -1932,7 +1932,7 @@ void drawcubemap(int size, const vec &o, float yaw, float pitch, const cubemapsi
         setfog(fogmat, fogbelow, 1, abovemat);
 
         renderwaterfog(fogmat, fogbelow);
-    
+
         setfog(fogmat, fogbelow, clamp(fogbelow, 0.0f, 1.0f), abovemat);
     }
 
@@ -1998,8 +1998,8 @@ namespace modelpreview
         oldfov = curfov;
         oldldrscale = ldrscale;
         oldldrscaleb = ldrscaleb;
-        oldfarplane = farplane; 
-        oldvieww = vieww; 
+        oldfarplane = farplane;
+        oldvieww = vieww;
         oldviewh = viewh;
 
         aspect = w/float(h);
@@ -2008,7 +2008,7 @@ namespace modelpreview
         farplane = 1024;
         vieww = min(gw, w);
         viewh = min(gh, h);
-        aspect = 
+        aspect =
         ldrscale = 1;
         ldrscaleb = ldrscale/255;
 
@@ -2078,7 +2078,7 @@ void gl_drawframe(int w, int h)
     else { vieww = w; viewh = h; }
     aspect = forceaspect ? forceaspect : vieww/float(viewh);
     fovy = 2*atan2(tan(curfov/2*RAD), aspect)/RAD;
-    
+
     float fogmargin = 1 + WATER_AMPLITUDE + nearplane;
     int fogmat = lookupmaterial(vec(camera1->o.x, camera1->o.y, camera1->o.z - fogmargin))&(MATF_VOLUME|MATF_INDEX), abovemat = MAT_AIR;
     float fogbelow = 0;
@@ -2091,7 +2091,7 @@ void gl_drawframe(int w, int h)
         }
         else fogmat = abovemat;
     }
-    else fogmat = MAT_AIR;    
+    else fogmat = MAT_AIR;
     setfog(abovemat);
     //setfog(fogmat, fogbelow, 1, abovemat);
 
@@ -2118,9 +2118,9 @@ void gl_drawframe(int w, int h)
     GLOBALPARAM(millis, (lastmillis/1000.0f, lastmillis/1000.0f, lastmillis/1000.0f));
 
     visiblecubes();
-  
+
     if(wireframe && editmode) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
- 
+
     rendergbuffer();
 
     if(wireframe && editmode) glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -2128,14 +2128,14 @@ void gl_drawframe(int w, int h)
 
     renderao();
     GLERROR;
- 
+
     // render grass after AO to avoid disturbing shimmering patterns
     generategrass();
     rendergrass();
     GLERROR;
 
     extern int rhinoq;
-    if(!rhinoq) 
+    if(!rhinoq)
     {
         renderradiancehints();
         GLERROR;
@@ -2182,7 +2182,7 @@ void gl_drawframe(int w, int h)
         rendereditcursor();
         glDepthMask(GL_TRUE);
     }
-        
+
     glDisable(GL_CULL_FACE);
     glDisable(GL_DEPTH_TEST);
 
@@ -2204,7 +2204,7 @@ void gl_drawmainmenu(int w, int h)
     xtravertsva = xtraverts = glde = gbatches = vtris = vverts = 0;
 
     renderbackground(NULL, NULL, NULL, NULL, true, true);
-    
+
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     glMatrixMode(GL_MODELVIEW);
@@ -2230,7 +2230,7 @@ void damagecompass(int n, const vec &loc)
 {
     if(!usedamagecompass || minimized) return;
     vec delta(loc);
-    delta.sub(camera1->o); 
+    delta.sub(camera1->o);
     float yaw, pitch;
     if(delta.magnitude()<4) yaw = camera1->yaw;
     else vectoyawpitch(delta, yaw, pitch);
@@ -2332,8 +2332,8 @@ static Texture *crosshairs[MAXCROSSHAIRS] = { NULL, NULL, NULL, NULL };
 void loadcrosshair(const char *name, int i)
 {
     if(i < 0 || i >= MAXCROSSHAIRS) return;
-	crosshairs[i] = name ? textureload(name, 3, true) : notexture;
-    if(crosshairs[i] == notexture) 
+    crosshairs[i] = name ? textureload(name, 3, true) : notexture;
+    if(crosshairs[i] == notexture)
     {
         name = game::defaultcrosshair(i);
         if(!name) name = "data/crosshair.png";
@@ -2343,12 +2343,12 @@ void loadcrosshair(const char *name, int i)
 
 void loadcrosshair_(const char *name, int *i)
 {
-	loadcrosshair(name, *i);
+    loadcrosshair(name, *i);
 }
 
 COMMANDN(loadcrosshair, loadcrosshair_, "si");
 
-ICOMMAND(getcrosshair, "i", (int *i), 
+ICOMMAND(getcrosshair, "i", (int *i),
 {
     const char *name = "";
     if(*i >= 0 && *i < MAXCROSSHAIRS)
@@ -2358,7 +2358,7 @@ ICOMMAND(getcrosshair, "i", (int *i),
     }
     result(name);
 });
- 
+
 void writecrosshairs(stream *f)
 {
     loopi(MAXCROSSHAIRS) if(crosshairs[i] && crosshairs[i]!=notexture)
@@ -2382,13 +2382,13 @@ void drawcrosshair(int w, int h)
         g3d_cursorpos(cx, cy);
     }
     else
-    { 
+    {
         int index = game::selectcrosshair(r, g, b);
         if(index < 0) return;
         if(!crosshairfx) index = 0;
         if(!crosshairfx || !crosshaircolors) r = g = b = 1;
         crosshair = crosshairs[index];
-        if(!crosshair) 
+        if(!crosshair)
         {
             loadcrosshair(NULL, index);
             crosshair = crosshairs[index];
@@ -2433,13 +2433,13 @@ void gl_drawhud(int w, int h)
     glOrtho(0, w, h, 0, -1, 1);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    
+
     glColor3f(1, 1, 1);
 
     debuglights();
 
     glEnable(GL_BLEND);
-    
+
     if(!mainmenu)
     {
         drawdamagescreen(w, h);
@@ -2488,12 +2488,12 @@ void gl_drawhud(int w, int h)
                     char *dst = buf;
                     const char *src = &buf[!wallclock24 && buf[0]=='0' ? 1 : 0];
                     while(*src) *dst++ = tolower(*src++);
-                    *dst++ = '\0'; 
+                    *dst++ = '\0';
                     draw_text(buf, conw-5*FONTH, conh-FONTH*3/2-roffset);
                     roffset += FONTH;
                 }
             }
-                       
+
             if(editmode || showeditstats)
             {
                 static int laststats = 0, prevstats[7] = { 0, 0, 0, 0, 0, 0, 0 }, curstats[7] = { 0, 0, 0, 0, 0, 0, 0 };
@@ -2549,13 +2549,13 @@ void gl_drawhud(int w, int h)
                         int tw, th;
                         text_bounds(gameinfo, tw, th);
                         th += FONTH-1; th -= th%FONTH;
-                        roffset += max(th, FONTH);    
+                        roffset += max(th, FONTH);
                         draw_text(gameinfo, conw-max(5*FONTH, 2*FONTH+tw), conh-FONTH/2-roffset);
                     }
                     DELETEA(gameinfo);
                 }
-            } 
-            
+            }
+
             glPopMatrix();
         }
 
@@ -2568,7 +2568,7 @@ void gl_drawhud(int w, int h)
 
         rendertexturepanel(w, h);
     }
-    
+
     g3d_limitscale((2*limitgui - conh) / float(conh));
 
     glPushMatrix();

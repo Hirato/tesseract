@@ -667,92 +667,92 @@ struct captureclientmode : clientmode
         findplayerspawn(d, pickteamspawn(d->team));
     }
 
-	bool aicheck(fpsent *d, ai::aistate &b)
-	{
-		return false;
-	}
+    bool aicheck(fpsent *d, ai::aistate &b)
+    {
+        return false;
+    }
 
-	void aifind(fpsent *d, ai::aistate &b, vector<ai::interest> &interests)
-	{
-		vec pos = d->feetpos();
-		loopvj(bases)
-		{
-			baseinfo &f = bases[j];
+    void aifind(fpsent *d, ai::aistate &b, vector<ai::interest> &interests)
+    {
+        vec pos = d->feetpos();
+        loopvj(bases)
+        {
+            baseinfo &f = bases[j];
             if(!f.valid()) continue;
-			static vector<int> targets; // build a list of others who are interested in this
-			targets.setsize(0);
-			ai::checkothers(targets, d, ai::AI_S_DEFEND, ai::AI_T_AFFINITY, j, true);
-			fpsent *e = NULL;
-			int regen = !m_regencapture || d->health >= 100 ? 0 : 1;
-			if(m_regencapture)
-			{
-				int gun = f.ammotype-1+I_SHELLS;
-				if(f.ammo > 0 && !d->hasmaxammo(gun))
-					regen = gun != d->ai->weappref ? 2 : 4;
-			}
-			loopi(numdynents()) if((e = (fpsent *)iterdynents(i)) && !e->ai && e->state == CS_ALIVE && isteam(d->team, e->team))
-			{ // try to guess what non ai are doing
-				vec ep = e->feetpos();
-				if(targets.find(e->clientnum) < 0 && ep.squaredist(f.o) <= (CAPTURERADIUS*CAPTURERADIUS))
-					targets.add(e->clientnum);
-			}
-			if((regen && f.owner[0] && !strcmp(f.owner, d->team)) || (targets.empty() && (!f.owner[0] || strcmp(f.owner, d->team) || f.enemy[0])))
-			{
-				ai::interest &n = interests.add();
-				n.state = ai::AI_S_DEFEND;
-				n.node = ai::closestwaypoint(f.o, ai::SIGHTMIN, false);
-				n.target = j;
-				n.targtype = ai::AI_T_AFFINITY;
-				n.score = pos.squaredist(f.o)/(regen ? float(100*regen) : 1.f);
-			}
-		}
-	}
+            static vector<int> targets; // build a list of others who are interested in this
+            targets.setsize(0);
+            ai::checkothers(targets, d, ai::AI_S_DEFEND, ai::AI_T_AFFINITY, j, true);
+            fpsent *e = NULL;
+            int regen = !m_regencapture || d->health >= 100 ? 0 : 1;
+            if(m_regencapture)
+            {
+                int gun = f.ammotype-1+I_SHELLS;
+                if(f.ammo > 0 && !d->hasmaxammo(gun))
+                    regen = gun != d->ai->weappref ? 2 : 4;
+            }
+            loopi(numdynents()) if((e = (fpsent *)iterdynents(i)) && !e->ai && e->state == CS_ALIVE && isteam(d->team, e->team))
+            { // try to guess what non ai are doing
+                vec ep = e->feetpos();
+                if(targets.find(e->clientnum) < 0 && ep.squaredist(f.o) <= (CAPTURERADIUS*CAPTURERADIUS))
+                    targets.add(e->clientnum);
+            }
+            if((regen && f.owner[0] && !strcmp(f.owner, d->team)) || (targets.empty() && (!f.owner[0] || strcmp(f.owner, d->team) || f.enemy[0])))
+            {
+                ai::interest &n = interests.add();
+                n.state = ai::AI_S_DEFEND;
+                n.node = ai::closestwaypoint(f.o, ai::SIGHTMIN, false);
+                n.target = j;
+                n.targtype = ai::AI_T_AFFINITY;
+                n.score = pos.squaredist(f.o)/(regen ? float(100*regen) : 1.f);
+            }
+        }
+    }
 
-	bool aidefend(fpsent *d, ai::aistate &b)
-	{
+    bool aidefend(fpsent *d, ai::aistate &b)
+    {
         if(!bases.inrange(b.target)) return false;
         baseinfo &f = bases[b.target];
         if(!f.valid()) return false;
-		bool regen = !m_regencapture || d->health >= 100 ? false : true;
-		if(!regen && m_regencapture)
-		{
-			int gun = f.ammotype-1+I_SHELLS;
-			if(f.ammo > 0 && !d->hasmaxammo(gun))
-				regen = true;
-		}
-		int walk = 0;
-		if(!regen && !f.enemy[0] && f.owner[0] && !strcmp(f.owner, d->team))
-		{
-			static vector<int> targets; // build a list of others who are interested in this
-			targets.setsize(0);
-			ai::checkothers(targets, d, ai::AI_S_DEFEND, ai::AI_T_AFFINITY, b.target, true);
-			fpsent *e = NULL;
-			loopi(numdynents()) if((e = (fpsent *)iterdynents(i)) && !e->ai && e->state == CS_ALIVE && isteam(d->team, e->team))
-			{ // try to guess what non ai are doing
-				vec ep = e->feetpos();
-				if(targets.find(e->clientnum) < 0 && (ep.squaredist(f.o) <= (CAPTURERADIUS*CAPTURERADIUS*4)))
-					targets.add(e->clientnum);
-			}
-			if(!targets.empty())
-			{
-				if(lastmillis-b.millis >= (201-d->skill)*33)
-				{
-					d->ai->trywipe = true; // re-evaluate so as not to herd
-					return true;
-				}
-				else walk = 2;
-			}
-			else walk = 1;
-			b.millis = lastmillis;
-		}
-		return ai::defend(d, b, f.o, float(CAPTURERADIUS), float(CAPTURERADIUS*(2+(walk*2))), walk); // less wander than ctf
-	}
+        bool regen = !m_regencapture || d->health >= 100 ? false : true;
+        if(!regen && m_regencapture)
+        {
+            int gun = f.ammotype-1+I_SHELLS;
+            if(f.ammo > 0 && !d->hasmaxammo(gun))
+                regen = true;
+        }
+        int walk = 0;
+        if(!regen && !f.enemy[0] && f.owner[0] && !strcmp(f.owner, d->team))
+        {
+            static vector<int> targets; // build a list of others who are interested in this
+            targets.setsize(0);
+            ai::checkothers(targets, d, ai::AI_S_DEFEND, ai::AI_T_AFFINITY, b.target, true);
+            fpsent *e = NULL;
+            loopi(numdynents()) if((e = (fpsent *)iterdynents(i)) && !e->ai && e->state == CS_ALIVE && isteam(d->team, e->team))
+            { // try to guess what non ai are doing
+                vec ep = e->feetpos();
+                if(targets.find(e->clientnum) < 0 && (ep.squaredist(f.o) <= (CAPTURERADIUS*CAPTURERADIUS*4)))
+                    targets.add(e->clientnum);
+            }
+            if(!targets.empty())
+            {
+                if(lastmillis-b.millis >= (201-d->skill)*33)
+                {
+                    d->ai->trywipe = true; // re-evaluate so as not to herd
+                    return true;
+                }
+                else walk = 2;
+            }
+            else walk = 1;
+            b.millis = lastmillis;
+        }
+        return ai::defend(d, b, f.o, float(CAPTURERADIUS), float(CAPTURERADIUS*(2+(walk*2))), walk); // less wander than ctf
+    }
 
-	bool aipursue(fpsent *d, ai::aistate &b)
-	{
-		b.type = ai::AI_S_DEFEND;
-		return aidefend(d, b);
-	}
+    bool aipursue(fpsent *d, ai::aistate &b)
+    {
+        b.type = ai::AI_S_DEFEND;
+        return aidefend(d, b);
+    }
 };
 
 extern captureclientmode capturemode;
@@ -772,8 +772,8 @@ ICOMMAND(insidebases, "", (),
     }
     buf.add('\0');
     result(buf.getbuf());
-}); 
-    
+});
+
 #else
     bool notgotbases;
 
@@ -799,7 +799,7 @@ ICOMMAND(insidebases, "", (),
             entity &e = ments[i];
             if(e.type != BASE) continue;
             int ammotype = e.attr1;
-            addbase(ammotype, e.o); 
+            addbase(ammotype, e.o);
         }
         notgotbases = false;
         sendbases();

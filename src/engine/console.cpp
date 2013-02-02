@@ -39,7 +39,7 @@ void conoutf(const char *fmt, ...)
     va_list args;
     va_start(args, fmt);
     conoutfv(CON_INFO, fmt, args);
-    va_end(args); 
+    va_end(args);
 }
 
 void conoutf(int type, const char *fmt, ...)
@@ -132,7 +132,7 @@ int drawconlines(int conskip, int confade, int conwidth, int conheight, int cono
         char *line = conlines[idx].line;
         int width, height;
         text_bounds(line, width, height, conwidth);
-        if(dir <= 0) y -= height; 
+        if(dir <= 0) y -= height;
         draw_text(line, conoff, y, 0xFF, 0xFF, 0xFF, 0xFF, -1, conwidth);
         if(dir > 0) y += height;
     }
@@ -145,10 +145,10 @@ int renderconsole(int w, int h, int abovehud)                   // render buffer
         conoff = fullconsole ? FONTH : FONTH/3,
         conheight = min(fullconsole ? ((h*fullconsize/100)/FONTH)*FONTH : FONTH*consize, h - 2*(conpad + conoff)),
         conwidth = w - 2*(conpad + conoff) - (fullconsole ? 0 : game::clipconsole(w, h));
-    
+
     extern void consolebox(int x1, int y1, int x2, int y2);
     if(fullconsole) consolebox(conpad, conpad, conwidth+conpad+2*conoff, conheight+conpad+2*conoff);
-    
+
     int y = drawconlines(conskip, fullconsole ? 0 : confade, conwidth, conheight, conpad+conoff, fullconsole ? fullconfilter : confilter);
     if(!fullconsole && (miniconsize && miniconwidth))
         drawconlines(miniconskip, miniconfade, (miniconwidth*(w - 2*(conpad + conoff)))/100, min(FONTH*miniconsize, abovehud - y), conpad+conoff, miniconfilter, abovehud, -1);
@@ -166,7 +166,7 @@ struct keym
         ACTION_EDITING,
         NUMACTIONS
     };
-    
+
     int code;
     char *name;
     char *actions[NUMACTIONS];
@@ -186,7 +186,7 @@ void keymap(int *code, char *key)
     DELETEA(km.name);
     km.name = newstring(key);
 }
-    
+
 COMMAND(keymap, "is");
 
 keym *keypressed = NULL;
@@ -220,13 +220,13 @@ keym *findbind(char *key)
         if(!strcasecmp(km.name, key)) return &km;
     });
     return NULL;
-}   
-    
+}
+
 void getbind(char *key, int type)
 {
     keym *km = findbind(key);
     result(km ? km->actions[type] : "");
-}   
+}
 
 void bindkey(char *key, char *action, int state, const char *cmd)
 {
@@ -285,10 +285,10 @@ void pasteconsole()
 {
 #ifdef WIN32
     UINT fmt = CF_UNICODETEXT;
-    if(!IsClipboardFormatAvailable(fmt)) 
+    if(!IsClipboardFormatAvailable(fmt))
     {
         fmt = CF_TEXT;
-        if(!IsClipboardFormatAvailable(fmt)) return; 
+        if(!IsClipboardFormatAvailable(fmt)) return;
     }
     if(!OpenClipboard(NULL)) return;
     HANDLE h = GetClipboardData(fmt);
@@ -305,22 +305,22 @@ void pasteconsole()
             decoded = min(int(sizeof(commandbuf)-1-commandlen), cblen);
             memcpy(&commandbuf[commandlen], cb, decoded);
             break;
-    }    
+    }
     commandbuf[commandlen + decoded] = '\0';
     GlobalUnlock(cb);
     CloseClipboard();
 #elif defined(__APPLE__)
-	extern char *mac_pasteconsole(int *cblen);
+    extern char *mac_pasteconsole(int *cblen);
     int cblen = 0;
-	uchar *cb = (uchar *)mac_pasteconsole(&cblen);
+    uchar *cb = (uchar *)mac_pasteconsole(&cblen);
     if(!cb) return;
     size_t commandlen = strlen(commandbuf);
     int decoded = decodeutf8((uchar *)&commandbuf[commandlen], int(sizeof(commandbuf)-1-commandlen), cb, cblen);
     commandbuf[commandlen + decoded] = '\0';
     free(cb);
-	#else
+#else
     SDL_SysWMinfo wminfo;
-    SDL_VERSION(&wminfo.version); 
+    SDL_VERSION(&wminfo.version);
     wminfo.subsystem = SDL_SYSWM_X11;
     if(!SDL_GetWMInfo(&wminfo)) return;
     int cbsize;
@@ -331,9 +331,9 @@ void pasteconsole()
     {
         cbend = (uchar *)memchr(cbline, '\0', &cb[cbsize] - cbline);
         if(!cbend) cbend = &cb[cbsize];
-        int cblen = int(cbend-cbline), commandmax = int(sizeof(commandbuf)-1-commandlen); 
-        loopi(cblen) if((cbline[i]&0xC0) == 0x80) 
-        { 
+        int cblen = int(cbend-cbline), commandmax = int(sizeof(commandbuf)-1-commandlen);
+        loopi(cblen) if((cbline[i]&0xC0) == 0x80)
+        {
             commandlen += decodeutf8((uchar *)&commandbuf[commandlen], commandmax, cbline, cblen);
             goto nextline;
         }
@@ -379,7 +379,7 @@ struct hline
                (commandprompt ? !prompt || strcmp(commandprompt, prompt) : prompt!=NULL) ||
                commandflags != flags;
     }
-    
+
     void save()
     {
         buf = newstring(commandbuf);
@@ -473,7 +473,7 @@ void execbind(keym &k, bool isdown)
 void consolekey(int code, bool isdown, int cooked)
 {
     #ifdef __APPLE__
-        #define MOD_KEYS (KMOD_LMETA|KMOD_RMETA) 
+        #define MOD_KEYS (KMOD_LMETA|KMOD_RMETA)
     #else
         #define MOD_KEYS (KMOD_LCTRL|KMOD_RCTRL)
     #endif
@@ -526,7 +526,7 @@ void consolekey(int code, bool isdown, int cooked)
 
             case SDLK_UP:
                 if(histpos > history.length()) histpos = history.length();
-                if(histpos > 0) history[--histpos]->restore(); 
+                if(histpos > 0) history[--histpos]->restore();
                 break;
 
             case SDLK_DOWN:
@@ -600,7 +600,7 @@ void keypress(int code, bool isdown, int cooked)
 {
     keym *haskey = keyms.access(code);
     if(haskey && haskey->pressed) execbind(*haskey, isdown); // allow pressed keys to release
-    else if(!menukey(code, isdown, cooked)) // 3D GUI mouse button intercept   
+    else if(!menukey(code, isdown, cooked)) // 3D GUI mouse button intercept
     {
         if(commandmillis >= 0) consolekey(code, isdown, cooked);
         else if(haskey) execbind(*haskey, isdown);
@@ -628,7 +628,7 @@ void writebinds(stream *f)
         loopv(binds)
         {
             keym &km = *binds[i];
-            if(*km.actions[j]) 
+            if(*km.actions[j])
             {
                 if(validateblock(km.actions[j])) f->printf("%s %s [%s]\n", cmds[j], escapestring(km.name), km.actions[j]);
                 else f->printf("%s %s %s\n", cmds[j], escapestring(km.name), escapestring(km.actions[j]));
@@ -656,7 +656,7 @@ struct filesval
     char *dir, *ext;
     vector<char *> files;
     int millis;
-    
+
     filesval(int type, const char *dir, const char *ext) : type(type), dir(newstring(dir)), ext(ext && ext[0] ? newstring(ext) : NULL), millis(-1) {}
     ~filesval() { DELETEA(dir); DELETEA(ext); files.deletearrays(); }
 
@@ -665,9 +665,9 @@ struct filesval
     void update()
     {
         if(type!=FILES_DIR || millis >= commandmillis) return;
-        files.deletearrays();        
+        files.deletearrays();
         listfiles(dir, ext, files);
-        files.sort(comparefiles); 
+        files.sort(comparefiles);
         loopv(files) if(i && !strcmp(files[i], files[i-1])) delete[] files.remove(i--);
         millis = totalmillis;
     }
@@ -720,7 +720,7 @@ void addcomplete(char *command, int type, char *dir, char *ext)
     if(!val)
     {
         filesval *f = new filesval(type, dir, ext);
-        if(type==FILES_LIST) explodelist(dir, f->files); 
+        if(type==FILES_LIST) explodelist(dir, f->files);
         val = &completefiles[fileskey(type, f->dir, f->ext)];
         *val = f;
     }
@@ -815,7 +815,7 @@ void writecompletions(stream *f)
     {
         char *k = cmds[i];
         filesval *v = completions[k];
-        if(v->type==FILES_LIST) 
+        if(v->type==FILES_LIST)
         {
             if(validateblock(v->dir)) f->printf("listcomplete %s [%s]\n", escapeid(k), v->dir);
             else f->printf("listcomplete %s %s\n", escapeid(k), escapestring(v->dir));

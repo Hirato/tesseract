@@ -66,7 +66,7 @@ struct lerpvert
     bool operator==(const lerpvert &l) const { return u == l.u && v == l.v; }
     bool operator!=(const lerpvert &l) const { return u != l.u || v != l.v; }
 };
-    
+
 struct lerpbounds
 {
     const lerpvert *min;

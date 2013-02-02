@@ -116,7 +116,7 @@ void addvisibleva(vtxarray *va)
 
 void sortvisiblevas()
 {
-    visibleva = NULL; 
+    visibleva = NULL;
     vtxarray **last = &visibleva;
     loopi(VASORTSIZE) if(vasort[i])
     {
@@ -134,7 +134,7 @@ void findvisiblevas(vector<vtxarray *> &vas, bool resetocclude = false)
         vtxarray &v = *vas[i];
         int prevvfc = resetocclude ? VFC_NOT_VISIBLE : v.curvfc;
         v.curvfc = isvisiblecube(v.o, v.size);
-        if(v.curvfc!=VFC_NOT_VISIBLE) 
+        if(v.curvfc!=VFC_NOT_VISIBLE)
         {
             if(pvsoccluded(v.o, v.size))
             {
@@ -168,7 +168,7 @@ void calcvfcD()
         loopk(3) if(p[k] > 0) vfcDfar[i] += p[k];
         else vfcDnear[i] += p[k];
     }
-} 
+}
 
 void setvfcP(const vec &bbmin, const vec &bbmax)
 {
@@ -226,7 +226,7 @@ void visiblecubes(bool cull)
 static inline bool insideva(const vtxarray *va, const vec &v, int margin = 2)
 {
     int size = va->size + margin;
-    return v.x>=va->o.x-margin && v.y>=va->o.y-margin && v.z>=va->o.z-margin && 
+    return v.x>=va->o.x-margin && v.y>=va->o.y-margin && v.z>=va->o.z-margin &&
            v.x<=va->o.x+size && v.y<=va->o.y+size && v.z<=va->o.z+size;
 }
 
@@ -292,7 +292,7 @@ void clearqueries()
     loopi(2)
     {
         queryframe &qf = queryframes[i];
-        loopj(qf.max) 
+        loopj(qf.max)
         {
             glDeleteQueries_(1, &qf.queries[j].id);
             qf.queries[j].owner = NULL;
@@ -335,7 +335,7 @@ void drawbb(const ivec &bo, const ivec &br, const vec &camera)
         else if(camera[dim] > bo[dim]) continue; \
         v0 v1 v2 v3 \
         xtraverts += 4; \
-    } while(0); 
+    } while(0);
     #define GENFACEVERT(orient, vert, ox,oy,oz, rx,ry,rz) \
         glVertex3f(ox rx, oy ry, oz rz);
     GENFACEVERTS(bo.x, bo.x + br.x, bo.y, bo.y + br.y, bo.z, bo.z + br.z, , , , , , )
@@ -436,7 +436,7 @@ void rendermapmodels()
                 rendered = true;
                 oe->query = doquery && oe->distance>0 && !(++skipoq%oqmm) ? newquery(oe) : NULL;
                 if(oe->query) startmodelquery(oe->query);
-            }        
+            }
             rendermapmodel(e);
             e.visible = false;
         }
@@ -471,7 +471,7 @@ void rendermapmodels()
 static inline bool bbinsideva(const ivec &bo, const ivec &br, vtxarray *va)
 {
     return bo.x >= va->bbmin.x && bo.y >= va->bbmin.y && va->o.z >= va->bbmin.z &&
-        bo.x + br.x <= va->bbmax.x && bo.y + br.y <= va->bbmax.y && bo.z + br.z <= va->bbmax.z; 
+        bo.x + br.x <= va->bbmax.x && bo.y + br.y <= va->bbmax.y && bo.z + br.z <= va->bbmax.z;
 }
 
 static inline bool bboccluded(const ivec &bo, const ivec &br, cube *c, const ivec &o, int size)
@@ -558,7 +558,7 @@ void renderoutline()
             drawvatris(va, 3*(va->alphabacktris + va->alphafronttris + va->refracttris), 3*(va->tris + va->blendtris));
             xtravertsva += 3*(va->alphabacktris + va->alphafronttris + va->refracttris);
         }
-        
+
         prev = va;
     }
 
@@ -624,7 +624,7 @@ void renderblendbrush(GLuint tex, float x, float y, float w, float h)
 
     notextureshader->set();
 }
- 
+
 int calcbbsidemask(const ivec &bbmin, const ivec &bbmax, const vec &lightpos, float lightradius, float bias)
 {
     vec pmin = bbmin.tovec().sub(lightpos).div(lightradius), pmax = bbmax.tovec().sub(lightpos).div(lightradius);
@@ -886,7 +886,7 @@ int cullfrustumsides(const vec &lightpos, float lightradius, float size, float b
 {
     int sides = 0x3F, masks[6] = { 3<<4, 3<<4, 3<<0, 3<<0, 3<<2, 3<<2 };
     float scale = (size - 2*border)/size, bias = border / (float)(size - border);
-    // check if cone enclosing side would cross frustum plane 
+    // check if cone enclosing side would cross frustum plane
     scale = 2 / (scale*scale + 2);
     loopi(5) if(vfcP[i].dist(lightpos) <= -0.03125f)
     {
@@ -945,7 +945,7 @@ int cullfrustumtetra(const vec &lightpos, float lightradius, float size, float b
     int outside[5] = { 0, 0, 0, 0 };
     loopi(4) if(vfcP[i].dist(lightpos) < 0) outside[4] |= 1<<i;
     float dist = vfcP[4].dist(lightpos);
-    if(dist < 0) outside[4] |= 1<<4; 
+    if(dist < 0) outside[4] |= 1<<4;
     if(dist > vfcDfog) outside[4] |= 1<<5;
     if(!outside[4]) return 0xF;
 
@@ -956,12 +956,12 @@ int cullfrustumtetra(const vec &lightpos, float lightradius, float size, float b
         vec(lightpos).add(vec(pr, -pr, pr)),
         vec(lightpos).add(vec(pr, pr, -pr)),
         vec(lightpos).add(vec(-pr, -pr, -pr))
-    }; 
+    };
     loopk(4)
     {
         loopi(4) if(vfcP[i].dist(p[k]) < 0) outside[k] |= 1<<i;
         float dist = vfcP[k].dist(p[k]);
-        if(dist < 0) outside[k] |= 1<<4; 
+        if(dist < 0) outside[k] |= 1<<4;
         if(dist > vfcDfog) outside[k] |= 1<<5;
     }
 
@@ -1021,7 +1021,7 @@ void findtetrashadowvas(vector<vtxarray *> &vas)
         float dist = vadist(&v, shadoworigin);
         if(dist < shadowradius || !smdistcull)
         {
-            v.shadowmask = !smbbcull ? 0x3F : (v.children.length() || v.mapmodels.length() ? 
+            v.shadowmask = !smbbcull ? 0x3F : (v.children.length() || v.mapmodels.length() ?
                                 calcbbtetramask(v.bbmin, v.bbmax, shadoworigin, shadowradius, shadowbias) :
                                 calcbbtetramask(v.geommin, v.geommax, shadoworigin, shadowradius, shadowbias));
             addshadowva(&v, dist);
@@ -1170,7 +1170,7 @@ static octaentities *shadowmms = NULL;
 void findshadowmms()
 {
     shadowmms = NULL;
-    octaentities **lastmms = &shadowmms; 
+    octaentities **lastmms = &shadowmms;
     for(vtxarray *va = shadowva; va; va = va->rnext)
     {
         loopvj(va->mapmodels)
@@ -1185,7 +1185,7 @@ void findshadowmms()
                         continue;
                     break;
                 case SM_TETRA:
-                case SM_CUBEMAP: 
+                case SM_CUBEMAP:
                     if(smdistcull && shadoworigin.dist_to_bb(oe->bbmin, oe->bbmax) >= shadowradius)
                         continue;
                     break;
@@ -1193,7 +1193,7 @@ void findshadowmms()
                     if(smdistcull && shadoworigin.dist_to_bb(oe->bbmin, oe->bbmax) >= shadowradius)
                         continue;
                     if(smbbcull && !bbinsidespot(shadoworigin, shadowdir, shadowspot, oe->bbmin, oe->bbmax))
-                        continue; 
+                        continue;
                     break;
             }
             oe->rnext = NULL;
@@ -1272,7 +1272,7 @@ void renderquery(renderstate &cur, occludequery *query, vtxarray *va, bool full 
     else drawbb(va->geommin, ivec(va->geommax).sub(va->geommin), camera);
 
     endquery(query);
-    
+
     extern int intel_immediate_bug;
     if(intel_immediate_bug && cur.vbuf) cur.vbuf = 0;
 }
@@ -1334,10 +1334,10 @@ static int firstbatch = -1, numbatches = 0;
 
 static void mergetexs(renderstate &cur, vtxarray *va, elementset *texs = NULL, int numtexs = 0, int offset = 0)
 {
-    if(!texs) 
-    { 
-        texs = va->eslist; 
-        numtexs = va->texs; 
+    if(!texs)
+    {
+        texs = va->eslist;
+        numtexs = va->texs;
         if(cur.alphaing)
         {
             texs += va->texs + va->blends;
@@ -1351,7 +1351,7 @@ static void mergetexs(renderstate &cur, vtxarray *va, elementset *texs = NULL, i
     {
         firstbatch = geombatches.length();
         numbatches = numtexs;
-        loopi(numtexs-1) 
+        loopi(numtexs-1)
         {
             geombatches.add(geombatch(texs[i], offset, va)).next = i+1;
             offset += texs[i].length;
@@ -1359,7 +1359,7 @@ static void mergetexs(renderstate &cur, vtxarray *va, elementset *texs = NULL, i
         geombatches.add(geombatch(texs[numtexs-1], offset, va));
         return;
     }
-    
+
     int prevbatch = -1, curbatch = firstbatch, curtex = 0;
     do
     {
@@ -1394,9 +1394,9 @@ static void mergetexs(renderstate &cur, vtxarray *va, elementset *texs = NULL, i
             {
                 b.batch = next;
                 geombatches[last].batch = geombatches.length()-1;
-            }    
+            }
         }
-        else 
+        else
         {
             numbatches++;
             b.next = curbatch;
@@ -1446,7 +1446,7 @@ static void changebatchtmus(renderstate &cur, int pass, geombatch &b)
         cur.blendx = b.va->o.x&~0xFFF;
         cur.blendy = b.va->o.y&~0xFFF;
         changed = true;
-    }  
+    }
     if(changed) glActiveTexture_(GL_TEXTURE0_ARB+cur.diffusetmu);
 }
 
@@ -1462,7 +1462,7 @@ static void changeslottmus(renderstate &cur, int pass, Slot &slot, VSlot &vslot)
     if(cur.alphaing)
     {
         float alpha = cur.alphaing > 1 ? vslot.alphafront : vslot.alphaback;
-        if(cur.colorscale != vslot.colorscale || cur.alphascale != alpha) 
+        if(cur.colorscale != vslot.colorscale || cur.alphascale != alpha)
         {
             cur.colorscale = vslot.colorscale;
             cur.alphascale = alpha;
@@ -1495,7 +1495,7 @@ static void changeslottmus(renderstate &cur, int pass, Slot &slot, VSlot &vslot)
                 glBindTexture(GL_TEXTURE_CUBE_MAP_ARB, cur.textures[envmaptmu] = t.t->id);
             }
         }
-        else 
+        else
         {
             if(cur.textures[tmu]!=t.t->id)
             {
@@ -1566,7 +1566,7 @@ static void renderbatch(renderstate &cur, int pass, geombatch &b)
     for(geombatch *curbatch = &b;; curbatch = &geombatches[curbatch->batch])
     {
         ushort len = curbatch->es.length;
-        if(len) 
+        if(len)
         {
             if(rendered < 0)
             {
@@ -1574,7 +1574,7 @@ static void renderbatch(renderstate &cur, int pass, geombatch &b)
                 rendered = 0;
                 gbatches++;
             }
-            drawtris(len, (ushort *)0 + curbatch->va->eoffset + curbatch->offset, curbatch->es.minvert, curbatch->es.maxvert); 
+            drawtris(len, (ushort *)0 + curbatch->va->eoffset + curbatch->offset, curbatch->es.minvert, curbatch->es.maxvert);
             vtris += len/3;
         }
         if(curbatch->batch < 0) break;
@@ -1597,14 +1597,14 @@ static void renderbatches(renderstate &cur, int pass)
     {
         if(!cur.depthmask) { cur.depthmask = true; glDepthMask(GL_TRUE); }
         if(!cur.colormask) { cur.colormask = true; glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE); }
-    }        
+    }
     while(curbatch >= 0)
     {
         geombatch &b = geombatches[curbatch];
         curbatch = b.next;
 
         if(cur.vbuf != b.va->vbuf) changevbuf(cur, pass, b.va);
-        if(cur.vslot != &b.vslot) 
+        if(cur.vslot != &b.vslot)
         {
             changeslottmus(cur, pass, *b.vslot.slot, b.vslot);
             if(cur.texgendim != b.es.dim || (cur.texgendim <= 2 && cur.texgenvslot != &b.vslot)) changetexgen(cur, b.es.dim, *b.vslot.slot, b.vslot);
@@ -1682,7 +1682,7 @@ void renderva(renderstate &cur, vtxarray *va, int pass = RENDERPASS_GBUFFER, boo
             drawvatris(va, 3*va->tris, 0);
             xtravertsva += va->verts;
             break;
- 
+
         case RENDERPASS_Z:
             if(doquery) startvaquery(va, );
             renderzpass(cur, va);
@@ -1738,7 +1738,7 @@ void rendergeom()
          doOQ = hasOQ && oqfrags && oqgeom && mainpass,
          doZP = doOQ && zpass;
     renderstate cur;
-    if(!doZP) 
+    if(!doZP)
     {
         setupTMUs(cur);
     }
@@ -1765,7 +1765,7 @@ void rendergeom()
                 va->occluded = pvsoccluded(va->geommin, va->geommax) ? OCCLUDE_GEOM : OCCLUDE_NOTHING;
             if(va->occluded >= OCCLUDE_GEOM)
             {
-                if(va->query) 
+                if(va->query)
                 {
                     if(!zpass && geombatches.length()) renderbatches(cur, RENDERPASS_GBUFFER);
                     renderquery(cur, va->query, va);
@@ -1896,7 +1896,7 @@ int dynamicshadowvabounds(int mask, vec &bbmin, vec &bbmax)
     }
     return vis;
 }
- 
+
 void renderrsmgeom()
 {
     renderstate cur;
@@ -1998,7 +1998,7 @@ int findalphavas()
         alphafrontsy1 = min(alphafrontsy1, sy1);
         alphafrontsx2 = max(alphafrontsx2, sx2);
         alphafrontsy2 = max(alphafrontsy2, sy2);
-        if(va->alphabacktris) 
+        if(va->alphabacktris)
         {
             alphabackvas++;
             alphabacksx1 = min(alphabacksx1, sx1);
@@ -2052,7 +2052,7 @@ void renderalphageom(int side)
     renderstate cur;
     cur.alphaing = side;
     cur.alphascale = -1;
-    
+
     glEnableClientState(GL_VERTEX_ARRAY);
 
     setupTMUs(cur);
@@ -2069,7 +2069,7 @@ void renderalphageom(int side)
         if(geombatches.length()) renderbatches(cur, RENDERPASS_GBUFFER);
         glCullFace(GL_BACK);
     }
-   
+
     cleanupTMUs(cur);
 
     glBindBuffer_(GL_ARRAY_BUFFER_ARB, 0);
@@ -2117,7 +2117,7 @@ bool renderexplicitsky(bool outline)
         if(va->occluded >= OCCLUDE_BB || !va->sky) continue;
         if(!prev || va->vbuf != prev->vbuf)
         {
-            if(!prev) 
+            if(!prev)
             {
                 glEnableClientState(GL_VERTEX_ARRAY);
                 if(outline)
@@ -2183,7 +2183,7 @@ struct shadowverts
     int table[SIZE];
     vector<vec> verts;
     vector<int> chain;
-    
+
     shadowverts() { clear(); }
 
     void clear()
@@ -2212,7 +2212,7 @@ struct shadowdrawinfo
 {
     int last;
     ushort minvert, maxvert;
-    
+
     shadowdrawinfo() : last(-1) { reset(); }
 
     void reset() { minvert = USHRT_MAX; maxvert = 0; }
@@ -2259,7 +2259,7 @@ static void flushshadowmeshdraws(shadowmesh &m, int sides, shadowdrawinfo draws[
     glBindBuffer_(GL_ARRAY_BUFFER_ARB, vbuf);
     glBufferData_(GL_ARRAY_BUFFER_ARB, shadowverts.verts.length()*sizeof(vec), shadowverts.verts.getbuf(), GL_STATIC_DRAW_ARB);
     glBindBuffer_(GL_ARRAY_BUFFER_ARB, 0);
-    shadowverts.clear(); 
+    shadowverts.clear();
 
     shadowvbos.add(ebuf);
     shadowvbos.add(vbuf);
@@ -2272,7 +2272,7 @@ static void genshadowmeshtris(shadowmesh &m, int sides, shadowdrawinfo draws[6],
     {
         const vec &v0 = vdata[edata[3*j]].pos, &v1 = vdata[edata[3*j+1]].pos, &v2 = vdata[edata[3*j+2]].pos;
         vec l0 = vec(v0).sub(shadoworigin);
-        float side = l0.scalartriple(vec(v1).sub(v0), vec(v2).sub(v0)); 
+        float side = l0.scalartriple(vec(v1).sub(v0), vec(v2).sub(v0));
         if(smcullside ? side > 0 : side < 0) continue;
         vec l1 = vec(v1).sub(shadoworigin), l2 = vec(v2).sub(shadoworigin);
         if(l0.squaredlen() > shadowradius*shadowradius && l1.squaredlen() > shadowradius*shadowradius && l2.squaredlen() > shadowradius*shadowradius)
@@ -2331,7 +2331,7 @@ static void genshadowmesh(int idx, extentity &e)
     shadowmapping = m.type;
     shadoworigin = m.origin;
     shadowradius = m.radius;
-    shadowbias = border / float(size - border); 
+    shadowbias = border / float(size - border);
     shadowdir = m.type == SM_SPOT ? vec(m.spotdir).sub(m.origin).normalize() : vec(0, 0, 0);
     shadowspot = m.spotangle;
 
@@ -2343,10 +2343,10 @@ static void genshadowmesh(int idx, extentity &e)
     {
         if(!va->shadowmask) continue;
         if(va->tris) genshadowmeshtris(m, sides, draws, va->edata + va->eoffset, va->tris, va->vdata);
-        if(skyshadow && va->sky) genshadowmeshtris(m, sides, draws, va->skydata + va->skyoffset, va->sky/3, va->vdata); 
+        if(skyshadow && va->sky) genshadowmeshtris(m, sides, draws, va->skydata + va->skyoffset, va->sky/3, va->vdata);
     }
     flushshadowmeshdraws(m, sides, draws);
-    
+
     shadowmeshes[idx] = m;
 
     shadowmapping = 0;
@@ -2374,7 +2374,7 @@ void genshadowmeshes()
     {
         extentity &e = *ents[i];
         if(e.type != ET_LIGHT) continue;
-        genshadowmesh(i, e);        
+        genshadowmesh(i, e);
     }
 }
 
@@ -2384,11 +2384,11 @@ shadowmesh *findshadowmesh(int idx, extentity &e)
     if(!m || m->type != shadowmapping || m->origin != shadoworigin || m->radius != shadowradius) return NULL;
     switch(m->type)
     {
-        case SM_SPOT: 
+        case SM_SPOT:
             if(!e.attached || e.attached->type != ET_SPOTLIGHT || m->spotdir != e.attached->o || m->spotangle != clamp(int(e.attached->attr1), 1, 89))
                 return NULL;
             break;
-    } 
+    }
     return m;
 }
 
@@ -2417,4 +2417,4 @@ void rendershadowmesh(shadowmesh *m)
     glBindBuffer_(GL_ELEMENT_ARRAY_BUFFER_ARB, 0);
     glBindBuffer_(GL_ARRAY_BUFFER_ARB, 0);
 }
- 
+
